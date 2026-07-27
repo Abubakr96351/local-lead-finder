@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "app/api/search/route.ts": {
+      "memory": 3009,
+      "maxDuration": 60
+    },
+    "app/api/radar/[id]/scan/route.ts": {
+      "memory": 3009,
+      "maxDuration": 60
+    }
+  }
+}

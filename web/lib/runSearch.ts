@@ -64,6 +64,12 @@ export async function runSearch(
   // build from @sparticuz/chromium. Locally, playwright-core finds the full
   // Chromium installed via the "playwright" devDependency (`npx playwright
   // install chromium`) in the shared browser cache — no executablePath needed.
+  if (process.env.VERCEL) {
+    // We only read DOM/text (no rendering), so disabling WebGL trims memory
+    // use — Chromium crashing under memory pressure is what surfaces as
+    // "Target page, context or browser has been closed" at newPage().
+    chromium.setGraphicsMode = false;
+  }
   const browser = process.env.VERCEL
     ? await playwright.launch({
         args: chromium.args,
