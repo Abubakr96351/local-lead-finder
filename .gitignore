@@ -1,0 +1,15 @@
+node_modules/
+dist/
+out/
+
+.env
+.env.*
+
+*.csv
+*.log
+
+.playwright-mcp/
+
+.DS_Store
+
+db password.txt

@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Business {
+  id             String   @id @default(cuid())
+  placeId        String   @unique
+  name           String
+  address        String
+  phone          String?
+  website        String?
+  email          String?
+  rating         Float?
+  reviewCount    Int?
+  lat            Float?
+  lng            Float?
+  screenshotPath String?
+  lastFetchedAt  DateTime @default(now())
+
+  signal        WebsiteSignal?
+  searchResults SearchResult[]
+  prospect      Prospect?
+}
+
+model WebsiteSignal {
+  id                 String   @id @default(cuid())
+  business           Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessId         String   @unique
+  reachable          Boolean
+  httpStatus         Int?
+  usesHttps          Boolean
+  hasViewportMeta    Boolean
+  copyrightYear      Int?
+  likelyBotBlocked   Boolean
+  opportunityScore   Int
+  opportunityLabel   String
+  flags              String
+  suggestedOpener    String
+  checkedAt          DateTime @default(now())
+}
+
+model Search {
+  id                 String   @id @default(cuid())
+  industry           String
+  city               String
+  country            String
+  resultCount        Int
+  placesApiRequests  Int
+  estCostUsd         Float
+  runAt              DateTime @default(now())
+
+  results SearchResult[]
+}
+
+model SearchResult {
+  id         String   @id @default(cuid())
+  search     Search   @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  searchId   String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessId String
+  position   Int
+
+  @@unique([searchId, businessId])
+}
+
+model Prospect {
+  id         String   @id @default(cuid())
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessId String   @unique
+  status     String   @default("new")
+  notes      String?
+  addedAt    DateTime @default(now())
+}
+
+model OutreachTemplate {
+  id              String @id @default(cuid())
+  opportunityType String @unique
+  scriptText      String
+}
+
+model Radar {
+  id                String    @id @default(cuid())
+  niche             String
+  state             String
+  region            String    @default("United States")
+  maxLeadsPerScan   Int       @default(25)
+  cadence           String    @default("weekly")
+  notificationEmail String?
+  active            Boolean   @default(true)
+  nextCityIndex     Int       @default(0)
+  lastScanAt        DateTime?
+  lastScanNewCount  Int?
+  createdAt         DateTime  @default(now())
+}
