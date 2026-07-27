@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  // @sparticuz/chromium's compressed browser binary lives outside what Next's
+  // file tracing picks up automatically (it's read via fs at runtime, not
+  // require()'d), so routes that launch it need it included explicitly.
+  outputFileTracingIncludes: {
+    "/api/search": ["./node_modules/@sparticuz/chromium/bin/**/*"],
+    "/api/radar/[id]/scan": ["./node_modules/@sparticuz/chromium/bin/**/*"],
+  },
 };
 
 export default nextConfig;
