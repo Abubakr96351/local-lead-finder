@@ -20,7 +20,7 @@ import { normalize } from "@/lib/searchCache";
 
 // Each concurrent tab is another full page load competing for the same
 // function's memory ceiling, so keep serverless Chromium's fan-out modest.
-const INSPECT_CONCURRENCY = process.env.VERCEL ? 1 : 4;
+const INSPECT_CONCURRENCY = process.env.VERCEL ? 2 : 4;
 const REVIEWS_CONCURRENCY = 5;
 
 export interface RunSearchParams {
