@@ -122,6 +122,18 @@ export async function inspectWebsite(
     userAgent: REAL_CHROME_UA,
   });
 
+  // We only read DOM/text (viewport meta, copyright, mailto/email) — never
+  // pixels — so skip images/fonts/media entirely. Real business sites are
+  // often heavy with these, and loading them was crashing Chromium under
+  // the serverless function's memory limit.
+  await page.route("**/*", (route) => {
+    const type = route.request().resourceType();
+    if (type === "image" || type === "media" || type === "font") {
+      return route.abort();
+    }
+    return route.continue();
+  });
+
   try {
     let attempt = await navigate(page, url);
 
