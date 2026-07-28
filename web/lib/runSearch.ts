@@ -88,6 +88,11 @@ export async function runSearch(
           const site = place.websiteUri
             ? await inspectWebsite(browser, place.websiteUri)
             : null;
+          if (site && !site.reachable) {
+            console.error(
+              `[siteInspector] ${place.websiteUri} unreachable: httpStatus=${site.httpStatus} likelyBotBlocked=${site.likelyBotBlocked} error=${site.error}`,
+            );
+          }
           checked += 1;
           onProgress?.({ phase: "sites", checked, total: places.length });
           copyrightYears.set(place.id, site?.copyrightYear);
