@@ -72,9 +72,18 @@ export async function runSearch(
     // "Target page, context or browser has been closed" at newPage().
     chromium.setGraphicsMode = false;
   }
+  // chromium.args defaults to --single-process, which merges every tab into
+  // one OS process — great for memory, but it means a single page crashing
+  // (e.g. a Cloudflare bot-challenge page trying to use WebRTC, which this
+  // stripped-down build doesn't support) takes the *entire* browser down,
+  // failing every other in-flight page with "Target ... has been closed".
+  // Dropping it isolates renderer crashes to just the one tab that hit them.
+  const chromiumArgs = chromium.args.filter(
+    (arg) => arg !== "--single-process" && arg !== "--no-zygote",
+  );
   const browser = process.env.VERCEL
     ? await playwright.launch({
-        args: chromium.args,
+        args: chromiumArgs,
         executablePath: await chromium.executablePath(),
         headless: true,
       })

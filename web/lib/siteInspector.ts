@@ -117,24 +117,29 @@ export async function inspectWebsite(
   browser: Browser,
   url: string,
 ): Promise<SiteInspection> {
-  const page = await browser.newPage({
-    viewport: { width: 1280, height: 800 },
-    userAgent: REAL_CHROME_UA,
-  });
-
-  // We only read DOM/text (viewport meta, copyright, mailto/email) — never
-  // pixels — so skip images/fonts/media entirely. Real business sites are
-  // often heavy with these, and loading them was crashing Chromium under
-  // the serverless function's memory limit.
-  await page.route("**/*", (route) => {
-    const type = route.request().resourceType();
-    if (type === "image" || type === "media" || type === "font") {
-      return route.abort();
-    }
-    return route.continue();
-  });
-
+  // newPage() itself can throw if the browser process has died (e.g. another
+  // concurrent tab crashed it) — keep it inside the try so one dead browser
+  // surfaces as an inconclusive result for this site, not an unhandled
+  // rejection that takes the whole batch of results down with it.
+  let page: Page | undefined;
   try {
+    page = await browser.newPage({
+      viewport: { width: 1280, height: 800 },
+      userAgent: REAL_CHROME_UA,
+    });
+
+    // We only read DOM/text (viewport meta, copyright, mailto/email) — never
+    // pixels — so skip images/fonts/media entirely. Real business sites are
+    // often heavy with these, and loading them was crashing Chromium under
+    // the serverless function's memory limit.
+    await page.route("**/*", (route) => {
+      const type = route.request().resourceType();
+      if (type === "image" || type === "media" || type === "font") {
+        return route.abort();
+      }
+      return route.continue();
+    });
+
     let attempt = await navigate(page, url);
 
     // A bot-block failure will just repeat on the other host too, so only
@@ -195,6 +200,6 @@ export async function inspectWebsite(
       error: err instanceof Error ? err.message : String(err),
     };
   } finally {
-    await page.close();
+    await page?.close().catch(() => {});
   }
 }
