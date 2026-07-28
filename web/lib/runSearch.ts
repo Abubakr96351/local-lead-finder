@@ -61,9 +61,9 @@ export async function runSearch(
   onFound?.(places.length);
 
   // On Vercel there's no system Chromium, so we launch the serverless-sized
-  // build from @sparticuz/chromium. Locally, playwright-core finds the full
-  // Chromium installed via the "playwright" devDependency (`npx playwright
-  // install chromium`) in the shared browser cache — no executablePath needed.
+  // build from @sparticuz/chromium. Locally, Playwright's own bundled Chromium
+  // isn't installable on this machine's macOS version, so we drive the
+  // system-installed Microsoft Edge (Chromium-based) instead via its channel.
   if (process.env.VERCEL) {
     // We only read DOM/text (no rendering), so disabling WebGL trims memory
     // use — Chromium crashing under memory pressure is what surfaces as
@@ -76,7 +76,7 @@ export async function runSearch(
         executablePath: await chromium.executablePath(),
         headless: true,
       })
-    : await playwright.launch();
+    : await playwright.launch({ channel: "msedge" });
   try {
     const inspectLimit = pLimit(INSPECT_CONCURRENCY);
     const copyrightYears = new Map<string, number | undefined>();
