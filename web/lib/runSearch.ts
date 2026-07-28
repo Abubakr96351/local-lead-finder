@@ -66,19 +66,27 @@ export async function runSearch(
   // build from @sparticuz/chromium. Locally, Playwright's own bundled Chromium
   // isn't installable on this machine's macOS version, so we drive the
   // system-installed Microsoft Edge (Chromium-based) instead via its channel.
-  if (process.env.VERCEL) {
-    // We only read DOM/text (no rendering), so disabling WebGL trims memory
-    // use — Chromium crashing under memory pressure is what surfaces as
-    // "Target page, context or browser has been closed" at newPage().
-    chromium.setGraphicsMode = false;
-  }
-  const browser = process.env.VERCEL
-    ? await playwright.launch({
+  async function launchBrowser() {
+    if (process.env.VERCEL) {
+      // We only read DOM/text (no rendering), so disabling WebGL trims
+      // memory use.
+      chromium.setGraphicsMode = false;
+      return playwright.launch({
         args: chromium.args,
         executablePath: await chromium.executablePath(),
         headless: true,
-      })
-    : await playwright.launch({ channel: "msedge" });
+      });
+    }
+    return playwright.launch({ channel: "msedge" });
+  }
+
+  // On Vercel, memory used by page loads was accumulating within a single
+  // long-lived browser until it crashed partway through almost every real
+  // search (surfacing as "Target page, context or browser has been closed").
+  // A fresh browser per site costs a relaunch (~1s, binaries stay warm in
+  // /tmp within the same function instance) but each check starts clean.
+  // Locally there's no such pressure, so one shared browser stays fast.
+  const sharedBrowser = process.env.VERCEL ? null : await launchBrowser();
   try {
     const inspectLimit = pLimit(INSPECT_CONCURRENCY);
     const copyrightYears = new Map<string, number | undefined>();
@@ -87,18 +95,25 @@ export async function runSearch(
     const leads: ScoredLead[] = await Promise.all(
       places.map((place) =>
         inspectLimit(async () => {
-          const site = place.websiteUri
-            ? await inspectWebsite(browser, place.websiteUri)
-            : null;
-          if (site && !site.reachable) {
-            console.error(
-              `[siteInspector] ${place.websiteUri} unreachable: httpStatus=${site.httpStatus} likelyBotBlocked=${site.likelyBotBlocked} error=${site.error}`,
-            );
+          const browser = sharedBrowser ?? (await launchBrowser());
+          try {
+            const site = place.websiteUri
+              ? await inspectWebsite(browser, place.websiteUri)
+              : null;
+            if (site && !site.reachable) {
+              console.error(
+                `[siteInspector] ${place.websiteUri} unreachable: httpStatus=${site.httpStatus} likelyBotBlocked=${site.likelyBotBlocked} error=${site.error}`,
+              );
+            }
+            checked += 1;
+            onProgress?.({ phase: "sites", checked, total: places.length });
+            copyrightYears.set(place.id, site?.copyrightYear);
+            return scoreLead(place, site);
+          } finally {
+            if (!sharedBrowser) {
+              await browser.close().catch(() => {});
+            }
           }
-          checked += 1;
-          onProgress?.({ phase: "sites", checked, total: places.length });
-          copyrightYears.set(place.id, site?.copyrightYear);
-          return scoreLead(place, site);
         }),
       ),
     );
@@ -231,6 +246,8 @@ export async function runSearch(
       placesApiRequests: requestCount + reviewsRequestCount,
     };
   } finally {
-    await browser.close();
+    if (sharedBrowser) {
+      await sharedBrowser.close();
+    }
   }
 }
