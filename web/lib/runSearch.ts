@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import chromium from "@sparticuz/chromium";
 import { chromium as playwright } from "playwright-core";
 import pLimit from "p-limit";
@@ -64,8 +65,15 @@ export async function runSearch(
 
   // On Vercel there's no system Chromium, so we launch the serverless-sized
   // build from @sparticuz/chromium. Locally, Playwright's own bundled Chromium
-  // isn't installable on this machine's macOS version, so we drive the
-  // system-installed Microsoft Edge (Chromium-based) instead via its channel.
+  // isn't installable on this machine's macOS version (Monterey), so we drive
+  // whatever Chromium-based browser is actually installed instead.
+  const LOCAL_BROWSER_CANDIDATES = [
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+  ];
+
   async function launchBrowser() {
     if (process.env.VERCEL) {
       // We only read DOM/text (no rendering), so disabling WebGL trims
@@ -77,7 +85,14 @@ export async function runSearch(
         headless: true,
       });
     }
-    return playwright.launch({ channel: "msedge" });
+    const executablePath = LOCAL_BROWSER_CANDIDATES.find((path) => existsSync(path));
+    if (!executablePath) {
+      throw new Error(
+        "No local Chromium-based browser found (checked Edge, Chrome, Brave, Chromium). " +
+          "Install one of these to run site checks locally.",
+      );
+    }
+    return playwright.launch({ executablePath });
   }
 
   // On Vercel, memory used by page loads was accumulating within a single
