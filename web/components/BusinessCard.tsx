@@ -15,7 +15,7 @@ export function BusinessCard({
   return (
     <div
       className={`rounded-xl border bg-white p-5 shadow-sm transition ${
-        selected ? "border-amber-400 ring-2 ring-amber-300" : "border-gray-200"
+        selected ? "border-brand-blue ring-2 ring-brand-blue-light" : "border-gray-200"
       }`}
     >
       <div className="mb-3 flex items-start justify-between gap-2">
@@ -91,7 +91,7 @@ export function BusinessCard({
       </div>
 
       {lead.flags.includes("site_check_inconclusive_verify_manually") && (
-        <p className="mt-3 rounded bg-amber-50 px-2 py-1 text-xs text-amber-700">
+        <p className="mt-3 rounded bg-brand-blue-subtle px-2 py-1 text-xs text-brand-blue-dark">
           Site check was blocked by the site&apos;s bot protection — verify manually
           before assuming it&apos;s down.
         </p>

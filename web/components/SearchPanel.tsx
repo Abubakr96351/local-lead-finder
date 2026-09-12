@@ -66,7 +66,7 @@ export function SearchPanel({
             <button
               type="button"
               onClick={randomNiche}
-              className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#111214] text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-navy text-white"
               aria-label="Random niche"
             >
               <Shuffle className="h-4 w-4" />
@@ -86,7 +86,7 @@ export function SearchPanel({
             <button
               type="button"
               onClick={randomCity}
-              className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#111214] text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-navy text-white"
               aria-label="Random city"
             >
               <Shuffle className="h-4 w-4" />
@@ -136,7 +136,7 @@ export function SearchPanel({
           type="button"
           onClick={onSubmit}
           disabled={loading || !params.industry || !params.city}
-          className="flex h-11 items-center gap-2 rounded-lg bg-amber-400 px-5 text-sm font-semibold text-gray-900 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 items-center gap-2 rounded-lg bg-brand-blue px-5 text-sm font-semibold text-white hover:bg-brand-blue-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Search className="h-4 w-4" />
           {loading ? "Scraping…" : "Start Scrape"}
@@ -147,7 +147,7 @@ export function SearchPanel({
             type="checkbox"
             checked={forceRefresh}
             onChange={(e) => onForceRefreshChange(e.target.checked)}
-            className="h-4 w-4 accent-amber-500"
+            className="h-4 w-4 accent-brand-blue"
           />
           Force refresh
         </label>

@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  CircleUserRound,
-  ChevronDown,
-  Radar as RadarIcon,
-  Menu,
-  X,
-} from "lucide-react";
+import { CircleUserRound, ChevronDown, Menu, X } from "lucide-react";
 
 const TABS = [
   { label: "Scraper", href: "/scraper" },
@@ -23,7 +18,7 @@ export function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="bg-[#111214] text-white">
+    <header className="bg-brand-navy text-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-10">
           <Link
@@ -31,9 +26,14 @@ export function NavBar() {
             className="flex shrink-0 items-center gap-2.5"
             onClick={() => setMenuOpen(false)}
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[#111214]">
-              <RadarIcon className="h-4.5 w-4.5" strokeWidth={2.25} />
-            </span>
+            <Image
+              src="/logo-mark.png"
+              alt="Local Lead Finder"
+              width={32}
+              height={27}
+              className="h-8 w-auto shrink-0"
+              priority
+            />
             <span className="whitespace-nowrap text-lg font-semibold leading-tight tracking-tight">
               Local Lead Finder
             </span>

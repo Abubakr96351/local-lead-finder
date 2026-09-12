@@ -55,7 +55,7 @@ export function RadarPageClient({ initialRadars }: { initialRadars: RadarData[] 
             setModalOpen(true);
           }}
           disabled={radars.length >= MAX_RADARS}
-          className="flex items-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:bg-brand-blue-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus className="h-4 w-4" /> Add Radar
         </button>

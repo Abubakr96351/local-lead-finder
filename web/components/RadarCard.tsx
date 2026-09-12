@@ -74,7 +74,7 @@ export function RadarCard({
               {radar.niche} in {stateInfo?.name ?? radar.state}
             </h3>
             {radar.lastScanNewCount !== null && radar.lastScanNewCount > 0 && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+              <span className="rounded-full bg-brand-blue-subtle px-2 py-0.5 text-[11px] font-semibold text-brand-blue-dark">
                 {radar.lastScanNewCount} new
               </span>
             )}

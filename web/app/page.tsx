@@ -72,22 +72,22 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-[#111214]">
+        <section className="relative overflow-hidden bg-brand-navy">
           <div
             className="pointer-events-none absolute inset-0 opacity-20"
             style={{
               backgroundImage:
-                "radial-gradient(circle at 20% 20%, #f59e0b 0, transparent 35%), radial-gradient(circle at 80% 0%, #f59e0b 0, transparent 30%)",
+                "radial-gradient(circle at 20% 20%, #016eef 0, transparent 35%), radial-gradient(circle at 80% 0%, #016eef 0, transparent 30%)",
             }}
           />
           <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-16 sm:pt-24">
             <div className="mx-auto max-w-2xl text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-amber-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-brand-blue-light">
                 Powered by live Google Maps data
               </span>
               <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
                 Find local businesses that{" "}
-                <span className="text-amber-400">actually need you</span>
+                <span className="text-brand-blue-light">actually need you</span>
               </h1>
               <p className="mt-5 text-lg leading-relaxed text-gray-400">
                 Local Lead Finder crawls Google Maps for any industry in any city, scores
@@ -97,7 +97,7 @@ export default function LandingPage() {
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/scraper"
-                  className="inline-flex items-center gap-2 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-[#111214] transition hover:bg-amber-300"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-blue-hover"
                 >
                   Open the scraper
                   <ArrowRight className="h-4 w-4" />
@@ -132,7 +132,7 @@ export default function LandingPage() {
           <div className="mt-12 grid gap-8 sm:grid-cols-3">
             {STEPS.map(({ step, title, description, icon: Icon }) => (
               <div key={step} className="relative">
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#111214] text-amber-400">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-navy text-brand-blue-light">
                   <Icon className="h-5 w-5" strokeWidth={2} />
                 </div>
                 <div className="mt-4 text-xs font-semibold tracking-widest text-gray-400">
@@ -164,7 +164,7 @@ export default function LandingPage() {
                   key={title}
                   className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-blue-subtle text-brand-blue-dark">
                     <Icon className="h-5 w-5" strokeWidth={2} />
                   </div>
                   <h3 className="mt-4 text-base font-semibold text-gray-900">{title}</h3>
@@ -206,7 +206,7 @@ export default function LandingPage() {
 
         {/* Global reach */}
         <section className="mx-auto max-w-4xl px-6 py-20 text-center">
-          <Globe2 className="mx-auto h-9 w-9 text-amber-500" strokeWidth={1.75} />
+          <Globe2 className="mx-auto h-9 w-9 text-brand-blue" strokeWidth={1.75} />
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
             Works anywhere Google Maps does
           </h2>
@@ -218,7 +218,7 @@ export default function LandingPage() {
 
         {/* CTA banner */}
         <section className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="rounded-2xl bg-[#111214] px-8 py-14 text-center sm:px-16">
+          <div className="rounded-2xl bg-brand-navy px-8 py-14 text-center sm:px-16">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">
               Your next client is one search away
             </h2>
@@ -227,7 +227,7 @@ export default function LandingPage() {
             </p>
             <Link
               href="/scraper"
-              className="mt-7 inline-flex items-center gap-2 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-[#111214] transition hover:bg-amber-300"
+              className="mt-7 inline-flex items-center gap-2 rounded-lg bg-brand-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-blue-hover"
             >
               Open the scraper
               <ArrowRight className="h-4 w-4" />

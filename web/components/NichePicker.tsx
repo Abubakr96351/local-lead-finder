@@ -27,7 +27,7 @@ export function NichePicker({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#111214] text-white"
+        className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-navy text-white"
         aria-label="Browse niche categories"
       >
         <LayoutGrid className="h-4 w-4" />

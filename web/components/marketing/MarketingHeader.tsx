@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Radar as RadarIcon, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const LINKS = [
   { label: "Features", href: "#features" },
@@ -12,9 +13,14 @@ export function MarketingHeader() {
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#111214] text-amber-400">
-            <RadarIcon className="h-4.5 w-4.5" strokeWidth={2.25} />
-          </span>
+          <Image
+            src="/logo-mark.png"
+            alt="Local Lead Finder"
+            width={32}
+            height={27}
+            className="h-8 w-auto"
+            priority
+          />
           <span className="text-base font-semibold leading-tight tracking-tight text-gray-900">
             Local Lead Finder
           </span>
@@ -30,7 +36,7 @@ export function MarketingHeader() {
 
         <Link
           href="/scraper"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-[#111214] px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-blue-hover"
         >
           Open the scraper
           <ArrowRight className="h-3.5 w-3.5" />

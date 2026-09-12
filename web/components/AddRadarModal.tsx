@@ -86,7 +86,7 @@ export function AddRadarModal({
           value={niche}
           onChange={(e) => setNiche(e.target.value)}
           placeholder='e.g. "plumbers"'
-          className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none"
+          className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none"
         />
 
         <label className="mb-1 block text-sm font-medium text-gray-700">Region</label>
@@ -132,7 +132,7 @@ export function AddRadarModal({
               onClick={() => setMaxLeadsPerScan(n)}
               className={`rounded-lg border px-4 py-2.5 text-sm font-semibold ${
                 maxLeadsPerScan === n
-                  ? "border-amber-400 bg-amber-50 text-gray-900"
+                  ? "border-brand-blue bg-brand-blue-subtle text-gray-900"
                   : "border-gray-300 text-gray-700 hover:border-gray-400"
               }`}
             >
@@ -150,7 +150,7 @@ export function AddRadarModal({
               onClick={() => setCadence(c)}
               className={`rounded-lg border px-3 py-2.5 text-sm font-semibold capitalize ${
                 cadence === c
-                  ? "border-amber-400 bg-amber-50 text-gray-900"
+                  ? "border-brand-blue bg-brand-blue-subtle text-gray-900"
                   : "border-gray-300 text-gray-700 hover:border-gray-400"
               }`}
             >
@@ -171,14 +171,14 @@ export function AddRadarModal({
           value={notificationEmail}
           onChange={(e) => setNotificationEmail(e.target.value)}
           placeholder="Defaults to your account email"
-          className="mb-6 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none"
+          className="mb-6 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none"
         />
 
         <button
           type="button"
           onClick={submit}
           disabled={!niche || saving}
-          className="w-full rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-gray-900 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg bg-brand-blue px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-blue-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? "Saving…" : initial ? "Save Radar" : "Create Radar"}
         </button>

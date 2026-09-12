@@ -3,6 +3,14 @@
 :root {
   --background: #f6f7f9;
   --foreground: #171717;
+
+  /* Brand palette sampled from the Local Lead Finder logo mark. */
+  --brand-navy: #062956;
+  --brand-blue: #016eef;
+  --brand-blue-hover: #0156ba;
+  --brand-blue-light: #529cf4;
+  --brand-blue-dark: #01489b;
+  --brand-blue-subtle: #e8f2fe;
 }
 
 @theme inline {
@@ -10,6 +18,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-hover: var(--brand-blue-hover);
+  --color-brand-blue-light: var(--brand-blue-light);
+  --color-brand-blue-dark: var(--brand-blue-dark);
+  --color-brand-blue-subtle: var(--brand-blue-subtle);
 }
 
 body {

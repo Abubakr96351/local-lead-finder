@@ -246,7 +246,7 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
                     <div className="mb-1 flex items-center gap-2">
                       <span className="font-semibold text-gray-900">{template.title}</span>
                       {template.popular && (
-                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700">
+                        <span className="rounded-full bg-brand-blue-subtle px-2 py-0.5 text-[11px] font-medium text-brand-blue-dark">
                           ★ Popular
                         </span>
                       )}
@@ -278,7 +278,7 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
               </button>
               <a
                 href={`tel:${cleanPhone}`}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-gray-900 hover:bg-amber-300"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-blue px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-blue-hover"
               >
                 <Phone className="h-4 w-4" /> Call Now
               </a>
@@ -318,7 +318,7 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
             />
             <a
               href={`mailto:${lead.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-gray-900 hover:bg-amber-300"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-blue px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-blue-hover"
             >
               <Mail className="h-4 w-4" /> Open in Mail
             </a>
@@ -343,7 +343,7 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
             <div className="mb-1 flex items-center justify-between">
               <label className="block text-sm font-medium text-gray-700">SMS Message</label>
               <span
-                className={`text-xs ${body.length > SMS_LIMIT ? "text-amber-600" : "text-gray-400"}`}
+                className={`text-xs ${body.length > SMS_LIMIT ? "text-brand-blue-dark" : "text-gray-400"}`}
               >
                 {body.length} / {SMS_LIMIT} chars
               </span>
@@ -355,7 +355,7 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
               className="mb-1 w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gray-400 focus:outline-none"
             />
             {body.length > SMS_LIMIT && (
-              <p className="mb-4 text-xs text-amber-600">This message may be split into multiple texts</p>
+              <p className="mb-4 text-xs text-brand-blue-dark">This message may be split into multiple texts</p>
             )}
             <a
               href={`sms:${cleanPhone}?body=${encodeURIComponent(body)}`}
