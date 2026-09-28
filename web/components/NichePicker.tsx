@@ -34,13 +34,13 @@ export function NichePicker({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-13 z-20 max-h-96 w-[26rem] overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+        <div className="fixed inset-x-4 top-24 z-20 max-h-[70vh] overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-xl sm:absolute sm:inset-x-auto sm:left-0 sm:top-13 sm:max-h-96 sm:w-[26rem]">
           {NICHE_CATEGORIES.map((category) => (
             <div key={category.title} className="mb-4 last:mb-0">
               <div className="mb-2 text-xs font-semibold tracking-wide text-gray-400">
                 {category.title.toUpperCase()}
               </div>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                 {category.niches.map((niche) => {
                   const Icon = niche.icon;
                   return (

@@ -1,40 +1,28 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Wrench,
-  Zap,
-  Wind,
   Home,
-  Leaf,
-  Bug,
-  Sparkles,
-  PaintRoller,
+  Wind,
+  Sun,
+  BatteryCharging,
+  Warehouse,
+  Fence,
   Layers,
-  KeyRound,
-  Box,
-  AppWindow,
+  Construction,
+  PaintRoller,
+  Blinds as BlindsIcon,
+  PanelsTopLeft,
+  Tent,
+  ShieldCheck,
   Hammer,
-  HardHat,
+  Bath,
+  Bug,
+  Leaf,
   Waves,
-  Scale,
-  PiggyBank,
-  Shield,
-  Building2,
-  TrendingUp,
-  Store,
-  Utensils,
-  Shirt,
-  GraduationCap,
-  Stethoscope,
-  Truck,
-  Calculator,
-  Gem,
-  Scissors,
-  Cake,
-  Moon,
-  BedDouble,
-  PartyPopper,
-  Milk,
-  Plane,
+  Sparkles,
+  SprayCan,
+  CloudRain,
+  Dumbbell,
+  HardHat,
 } from "lucide-react";
 
 export interface Niche {
@@ -72,81 +60,47 @@ function withColors(icons: Omit<Niche, "bg" | "fg">[]): Niche[] {
   }));
 }
 
-/**
- * Grouped by what the business does, never by country — a niche that reads
- * as regionally specific (e.g. Kirana Store, Tiffin Service) still sits
- * alongside its closest universal equivalents rather than in a country-named
- * bucket, since every one of these trades in markets worldwide.
- */
 export const NICHE_CATEGORIES: NicheCategory[] = [
   {
-    title: "Home Services",
+    title: "Home Improvement & Trades",
     niches: withColors([
-      { label: "Plumbing", value: "plumber", icon: Wrench },
-      { label: "Electrician", value: "electrician", icon: Zap },
-      { label: "HVAC", value: "hvac contractor", icon: Wind },
       { label: "Roofing", value: "roofing contractor", icon: Home },
-      { label: "Landscaping", value: "landscaping company", icon: Leaf },
-      { label: "Pest control", value: "pest control", icon: Bug },
-      { label: "Cleaning", value: "cleaning service", icon: Sparkles },
+      { label: "HVAC", value: "hvac contractor", icon: Wind },
+      { label: "Solar", value: "solar panel installer", icon: Sun },
+      { label: "Batteries", value: "solar battery installer", icon: BatteryCharging },
+      { label: "Garage doors", value: "garage door company", icon: Warehouse },
+      { label: "Gates", value: "gate installation company", icon: Fence },
+      { label: "Epoxy flooring", value: "epoxy flooring contractor", icon: Layers },
+      {
+        label: "Concrete resurfacing",
+        value: "concrete resurfacing contractor",
+        icon: Construction,
+      },
       { label: "Painting", value: "painting contractor", icon: PaintRoller },
-      { label: "Flooring", value: "flooring company", icon: Layers },
-      { label: "Locksmith", value: "locksmith", icon: KeyRound },
-      { label: "Moving", value: "moving company", icon: Box },
-      { label: "Packers & Movers", value: "packers and movers", icon: Truck },
-      { label: "Windows", value: "window company", icon: AppWindow },
-      { label: "Handyman", value: "handyman", icon: Hammer },
-      { label: "Construction", value: "construction company", icon: HardHat },
-      { label: "Pool service", value: "pool service", icon: Waves },
+      { label: "Blinds", value: "blinds supplier", icon: BlindsIcon },
+      { label: "Shutters", value: "shutters supplier", icon: PanelsTopLeft },
+      { label: "Awnings", value: "awning company", icon: Tent },
+      { label: "Security screens", value: "security screen installer", icon: ShieldCheck },
+      { label: "Kitchen renovation", value: "kitchen renovation company", icon: Hammer },
+      { label: "Bathroom renovation", value: "bathroom renovation company", icon: Bath },
+      { label: "Pest control", value: "pest control", icon: Bug },
+      { label: "Lawn care", value: "lawn care service", icon: Leaf },
+      { label: "Pool maintenance", value: "pool maintenance service", icon: Waves },
+      { label: "Cleaning", value: "cleaning service", icon: Sparkles },
+      { label: "Window cleaning", value: "window cleaning service", icon: SprayCan },
+      { label: "Gutter services", value: "gutter cleaning service", icon: CloudRain },
     ]),
   },
   {
-    title: "Professional Services",
+    title: "Renovation & Lifestyle",
     niches: withColors([
-      { label: "Legal", value: "law firm", icon: Scale },
-      { label: "Accounting", value: "accounting firm", icon: PiggyBank },
-      { label: "CA Firm", value: "chartered accountant", icon: Calculator },
-      { label: "Insurance", value: "insurance agency", icon: Shield },
-      { label: "Real estate", value: "real estate agency", icon: Building2 },
-      { label: "Finance", value: "financial advisor", icon: TrendingUp },
-    ]),
-  },
-  {
-    title: "Retail",
-    niches: withColors([
-      { label: "Grocery / Kirana Store", value: "kirana store", icon: Store },
-      { label: "Jewellery Shop", value: "jewellery shop", icon: Gem },
-      { label: "Boutique & Apparel", value: "saree boutique", icon: Shirt },
-    ]),
-  },
-  {
-    title: "Food & Beverage",
-    niches: withColors([
-      { label: "Meal / Tiffin Service", value: "tiffin service", icon: Utensils },
-      { label: "Bakery & Sweet Shop", value: "sweet shop", icon: Cake },
-      { label: "Dairy Booth", value: "dairy milk booth", icon: Milk },
-    ]),
-  },
-  {
-    title: "Health & Beauty",
-    niches: withColors([
-      { label: "Alternative Medicine Clinic", value: "ayurvedic clinic", icon: Stethoscope },
-      { label: "Salon & Spa", value: "salon and spa", icon: Scissors },
-    ]),
-  },
-  {
-    title: "Events & Hospitality",
-    niches: withColors([
-      { label: "Wedding Planner", value: "wedding planner", icon: PartyPopper },
-      { label: "Travel Agency", value: "travel agency", icon: Plane },
-      { label: "PG & Hostel", value: "pg hostel", icon: BedDouble },
-    ]),
-  },
-  {
-    title: "Personal Services",
-    niches: withColors([
-      { label: "Tuition Center", value: "tuition center", icon: GraduationCap },
-      { label: "Astrologer", value: "astrologer", icon: Moon },
+      {
+        label: "Fitness, wellness & leisure",
+        value: "fitness and wellness center",
+        icon: Dumbbell,
+      },
+      { label: "Pool installation", value: "pool builder", icon: Waves },
+      { label: "House renovation", value: "home renovation company", icon: HardHat },
     ]),
   },
 ];
