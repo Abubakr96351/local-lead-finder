@@ -107,7 +107,11 @@ export function SearchPanel({
             }
             className="h-11 rounded-lg border border-gray-300 px-3 text-sm"
           >
-            {[10, 15, 20, 30, 50].map((n) => (
+            {/* Capped at 25 to stay under Vercel's 300s function limit: a real
+                50-result search measured 5m21s locally at 4x concurrency, and
+                Vercel runs site checks at 2x concurrency to avoid Chromium
+                crashes — so 50 reliably times out there before finishing. */}
+            {[10, 15, 20, 25].map((n) => (
               <option key={n} value={n}>
                 {n} results
               </option>

@@ -5,6 +5,12 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
+// A 50-result search measured 5m21s locally at 4x concurrency; Vercel runs
+// site checks at 2x concurrency (to avoid Chromium crashes), so it reliably
+// exceeds the 300s function limit above before finishing. 25 is the largest
+// size that still completes with margin to spare.
+const MAX_RESULT_COUNT = 25;
+
 interface SearchRequestBody {
   industry: string;
   city: string;
@@ -19,6 +25,12 @@ export async function POST(request: Request) {
 
   if (!industry || !city) {
     return new Response("industry and city are required", { status: 400 });
+  }
+
+  if (!resultCount || resultCount > MAX_RESULT_COUNT) {
+    return new Response(`resultCount must be between 1 and ${MAX_RESULT_COUNT}`, {
+      status: 400,
+    });
   }
 
   if (!process.env.GOOGLE_PLACES_API_KEY) {
