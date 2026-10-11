@@ -25,7 +25,7 @@ model Business {
 
   signal        WebsiteSignal?
   searchResults SearchResult[]
-  prospect      Prospect?
+  prospects     Prospect[]
 }
 
 model WebsiteSignal {
@@ -54,6 +54,8 @@ model Search {
   placesApiRequests  Int
   estCostUsd         Float
   runAt              DateTime @default(now())
+  user               User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId             String?
 
   results SearchResult[]
 }
@@ -72,10 +74,14 @@ model SearchResult {
 model Prospect {
   id         String   @id @default(cuid())
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  businessId String   @unique
+  businessId String
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId     String?
   status     String   @default("new")
   notes      String?
   addedAt    DateTime @default(now())
+
+  @@unique([userId, businessId])
 }
 
 model OutreachTemplate {
@@ -97,4 +103,37 @@ model Radar {
   lastScanAt        DateTime?
   lastScanNewCount  Int?
   createdAt         DateTime  @default(now())
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId            String?
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  passwordHash        String
+  name                String?
+  role                Role      @default(USER)
+  active              Boolean   @default(true)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime  @default(now())
+
+  sessions  Session[]
+  searches  Search[]
+  prospects Prospect[]
+  radars    Radar[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }

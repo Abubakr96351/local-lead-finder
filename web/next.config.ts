@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/search": ["./node_modules/@sparticuz/chromium/bin/**/*"],
     "/api/radar/[id]/scan": ["./node_modules/@sparticuz/chromium/bin/**/*"],
+    "/api/cron/radar-scan": ["./node_modules/@sparticuz/chromium/bin/**/*"],
   },
 };
 

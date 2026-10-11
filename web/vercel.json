@@ -7,12 +7,20 @@
     "app/api/radar/[id]/scan/route.ts": {
       "memory": 2048,
       "maxDuration": 300
+    },
+    "app/api/cron/radar-scan/route.ts": {
+      "memory": 2048,
+      "maxDuration": 300
     }
   },
   "crons": [
     {
       "path": "/api/cron/keep-alive",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/radar-scan",
+      "schedule": "0 13 * * *"
     }
   ]
 }

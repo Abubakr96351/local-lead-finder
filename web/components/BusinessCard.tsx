@@ -7,10 +7,12 @@ export function BusinessCard({
   lead,
   selected,
   onToggle,
+  alreadyProspected,
 }: {
   lead: ScoredLead;
   selected: boolean;
   onToggle: () => void;
+  alreadyProspected?: boolean;
 }) {
   return (
     <div
@@ -19,7 +21,14 @@ export function BusinessCard({
       }`}
     >
       <div className="mb-3 flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-gray-900">{lead.name}</h3>
+        <div className="flex min-w-0 items-center gap-2">
+          <h3 className="truncate font-semibold text-gray-900">{lead.name}</h3>
+          {alreadyProspected && (
+            <span className="shrink-0 rounded-full bg-brand-blue-subtle px-2 py-0.5 text-[11px] font-medium text-brand-blue-dark">
+              Already in list
+            </span>
+          )}
+        </div>
         <button
           type="button"
           onClick={onToggle}
@@ -27,7 +36,7 @@ export function BusinessCard({
           aria-label={selected ? "Deselect business" : "Select business"}
           className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${
             selected
-              ? "border-blue-600 bg-blue-600 text-white"
+              ? "border-brand-blue bg-brand-blue text-white"
               : "border-gray-300 bg-white hover:border-gray-400"
           }`}
         >
@@ -68,7 +77,7 @@ export function BusinessCard({
                 href={lead.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="truncate text-blue-600 hover:underline"
+                className="truncate text-brand-blue hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 {lead.website.replace(/^https?:\/\//, "")}

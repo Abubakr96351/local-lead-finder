@@ -1,10 +1,18 @@
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 import { RadarPageClient } from "@/components/RadarPageClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function RadarPage() {
-  const radars = await prisma.radar.findMany({ orderBy: { createdAt: "desc" } });
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+
+  const radars = await prisma.radar.findMany({
+    where: user.role === "ADMIN" ? {} : { userId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">

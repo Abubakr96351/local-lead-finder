@@ -14,11 +14,18 @@ const HEADERS = [
   "suggestedOpener",
 ];
 
+// Scraped business data (names, addresses) is untrusted external input. A
+// value starting with =, +, -, or @ gets interpreted as a formula by Excel
+// and Google Sheets when the CSV is opened — prefixing it with a single
+// quote neutralizes that without changing what the cell displays.
+const FORMULA_TRIGGER_RE = /^[=+\-@]/;
+
 function escapeCsv(value: string): string {
-  if (value.includes(",") || value.includes('"') || value.includes("\n")) {
-    return `"${value.replace(/"/g, '""')}"`;
+  const safeValue = FORMULA_TRIGGER_RE.test(value) ? `'${value}` : value;
+  if (safeValue.includes(",") || safeValue.includes('"') || safeValue.includes("\n")) {
+    return `"${safeValue.replace(/"/g, '""')}"`;
   }
-  return value;
+  return safeValue;
 }
 
 export function toCsv(leads: ScoredLead[]): string {

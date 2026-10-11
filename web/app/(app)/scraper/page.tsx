@@ -63,6 +63,7 @@ function ScraperPageInner() {
   const [addingToProspects, setAddingToProspects] = useState(false);
   const [addedMessage, setAddedMessage] = useState<string | null>(null);
   const [stats, setStats] = useState<UsageStats | undefined>();
+  const [prospectedPlaceIds, setProspectedPlaceIds] = useState<Set<string>>(new Set());
 
   function refreshStats() {
     fetch("/api/stats")
@@ -71,8 +72,16 @@ function ScraperPageInner() {
       .catch(() => {});
   }
 
+  function refreshProspectedIds() {
+    fetch("/api/prospects/place-ids")
+      .then((res) => res.json())
+      .then((ids: string[]) => setProspectedPlaceIds(new Set(ids)))
+      .catch(() => {});
+  }
+
   useEffect(() => {
     refreshStats();
+    refreshProspectedIds();
   }, []);
 
   useEffect(() => {
@@ -172,10 +181,14 @@ function ScraperPageInner() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ placeIds: Array.from(selected) }),
       });
+      if (!res.ok) {
+        throw new Error(`Failed to add to prospect list: ${res.status}`);
+      }
       const data = await res.json();
       setAddedMessage(`Added ${data.added} to your prospect list.`);
       setSelected(new Set());
       refreshStats();
+      refreshProspectedIds();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -237,6 +250,7 @@ function ScraperPageInner() {
             onAddToProspects={addToProspectList}
             onExportCsv={exportCsv}
             addingToProspects={addingToProspects}
+            prospectedPlaceIds={prospectedPlaceIds}
           />
         </div>
       )}

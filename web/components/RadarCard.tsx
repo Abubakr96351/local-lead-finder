@@ -35,8 +35,14 @@ export function RadarCard({
     setScanning(true);
     try {
       const res = await fetch(`/api/radar/${radar.id}/scan`, { method: "POST" });
+      if (!res.ok) {
+        window.alert("Scan failed — please try again.");
+        return;
+      }
       const data = await res.json();
       onChanged(data.radar);
+    } catch {
+      window.alert("Scan failed — please try again.");
     } finally {
       setScanning(false);
     }
@@ -50,16 +56,30 @@ export function RadarCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ active: !radar.active }),
       });
+      if (!res.ok) {
+        window.alert("Couldn't update this radar — please try again.");
+        return;
+      }
       const updated = await res.json();
       onChanged(updated);
+    } catch {
+      window.alert("Couldn't update this radar — please try again.");
     } finally {
       setToggling(false);
     }
   }
 
   async function deleteRadar() {
-    await fetch(`/api/radar/${radar.id}`, { method: "DELETE" });
-    onDeleted();
+    try {
+      const res = await fetch(`/api/radar/${radar.id}`, { method: "DELETE" });
+      if (res.ok) {
+        onDeleted();
+      } else {
+        window.alert("Couldn't delete this radar — please try again.");
+      }
+    } catch {
+      window.alert("Couldn't delete this radar — please try again.");
+    }
   }
 
   const stateInfo = stateByName(radar.region, radar.state);

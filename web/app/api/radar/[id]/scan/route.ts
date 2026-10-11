@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { runSearch } from "@/lib/runSearch";
-import { cityForRadar } from "@/lib/regions";
+import { getCurrentUser } from "@/lib/auth";
+import { runRadarScan } from "@/lib/radarScan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,51 +10,23 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const user = await getCurrentUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
   const { id } = await params;
   const radar = await prisma.radar.findUnique({ where: { id } });
   if (!radar) {
     return new Response("Radar not found", { status: 404 });
   }
+  if (user.role !== "ADMIN" && radar.userId !== user.id) {
+    return new Response("Not found", { status: 404 });
+  }
 
-  const city = cityForRadar(radar.region, radar.state, radar.nextCityIndex);
+  // Manual "Scan now" never emails — the user is already watching the
+  // result live in the UI. Email is only for the unattended cron path
+  // (see app/api/cron/radar-scan/route.ts).
+  const { newCount, city, scanned } = await runRadarScan(radar, user.id);
 
-  const result = await runSearch({
-    industry: radar.niche,
-    city: `${city}, ${radar.state}`,
-    country: radar.region,
-    resultCount: radar.maxLeadsPerScan,
-  });
-
-  const placeIds = result.leads.map((lead) => lead.placeId);
-  const businesses = await prisma.business.findMany({
-    where: { placeId: { in: placeIds } },
-  });
-
-  const existingProspects = await prisma.prospect.findMany({
-    where: { businessId: { in: businesses.map((b) => b.id) } },
-    select: { businessId: true },
-  });
-  const existingIds = new Set(existingProspects.map((p) => p.businessId));
-  const newCount = businesses.filter((b) => !existingIds.has(b.id)).length;
-
-  await Promise.all(
-    businesses.map((business) =>
-      prisma.prospect.upsert({
-        where: { businessId: business.id },
-        create: { businessId: business.id },
-        update: {},
-      }),
-    ),
-  );
-
-  const updated = await prisma.radar.update({
-    where: { id },
-    data: {
-      nextCityIndex: radar.nextCityIndex + 1,
-      lastScanAt: new Date(),
-      lastScanNewCount: newCount,
-    },
-  });
-
-  return Response.json({ radar: updated, newCount, city, scanned: businesses.length });
+  const updated = await prisma.radar.findUniqueOrThrow({ where: { id } });
+  return Response.json({ radar: updated, newCount, city, scanned });
 }

@@ -1,10 +1,16 @@
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 import { ProspectListClient } from "@/components/ProspectListClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProspectsPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+
   const prospects = await prisma.prospect.findMany({
+    where: user.role === "ADMIN" ? {} : { userId: user.id },
     include: { business: { include: { signal: true } } },
     orderBy: { addedAt: "desc" },
   });

@@ -29,6 +29,7 @@ export interface RunSearchParams {
   city: string;
   country: string;
   resultCount: number;
+  userId: string;
 }
 
 export interface RunSearchProgress {
@@ -52,7 +53,7 @@ export async function runSearch(
   onProgress?: (progress: RunSearchProgress) => void,
   onFound?: (total: number) => void,
 ): Promise<RunSearchResult> {
-  const { industry, city, country, resultCount } = params;
+  const { industry, city, country, resultCount, userId } = params;
 
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
   if (!apiKey) {
@@ -182,6 +183,7 @@ export async function runSearch(
         resultCount: leads.length,
         placesApiRequests: requestCount + reviewsRequestCount,
         estCostUsd,
+        userId,
       },
     });
 

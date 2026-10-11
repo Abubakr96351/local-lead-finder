@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Phone, Mail, Globe, Star, FileText, Flame, ThumbsDown, Sparkles, Trash2 } from "lucide-react";
 import { LaptopMockup } from "./LaptopMockup";
 import { OutreachGauge } from "./OutreachGauge";
@@ -50,18 +50,24 @@ export function ProspectRow({
   const [status, setStatus] = useState(prospect.status);
   const [notes, setNotes] = useState(prospect.notes ?? "");
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [outreachOpen, setOutreachOpen] = useState(false);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const notesRef = useRef<HTMLTextAreaElement>(null);
 
   async function save(partial: { status?: string; notes?: string }) {
     setSaving(true);
+    setSaveError(false);
     try {
-      await fetch(`/api/prospects/${prospect.id}`, {
+      const res = await fetch(`/api/prospects/${prospect.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(partial),
       });
+      if (!res.ok) setSaveError(true);
+    } catch {
+      setSaveError(true);
     } finally {
       setSaving(false);
     }
@@ -71,8 +77,14 @@ export function ProspectRow({
     if (!confirm(`Remove ${prospect.business.name} from the prospect list?`)) return;
     setDeleting(true);
     try {
-      await fetch(`/api/prospects/${prospect.id}`, { method: "DELETE" });
-      onDeleted?.(prospect.id);
+      const res = await fetch(`/api/prospects/${prospect.id}`, { method: "DELETE" });
+      if (res.ok) {
+        onDeleted?.(prospect.id);
+      } else {
+        window.alert("Couldn't remove this prospect — please try again.");
+      }
+    } catch {
+      window.alert("Couldn't remove this prospect — please try again.");
     } finally {
       setDeleting(false);
     }
@@ -89,6 +101,7 @@ export function ProspectRow({
         <div className="flex items-center gap-3">
           <button
             type="button"
+            onClick={() => notesRef.current?.focus()}
             className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700"
           >
             <FileText className="h-4 w-4" /> Add Note
@@ -156,7 +169,7 @@ export function ProspectRow({
                 href={prospect.business.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="truncate text-blue-600 hover:underline"
+                className="truncate text-brand-blue hover:underline"
               >
                 {prospect.business.website.replace(/^https?:\/\//, "")}
               </a>
@@ -186,7 +199,7 @@ export function ProspectRow({
               {bullets.map((bullet) => (
                 <li key={bullet} className="flex items-start justify-between gap-2 text-sm">
                   <span className="flex items-start gap-2 text-gray-700">
-                    <Flame className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-500" />
+                    <Flame className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-blue" />
                     {bullet}
                   </span>
                   <button
@@ -205,6 +218,7 @@ export function ProspectRow({
       </div>
 
       <textarea
+        ref={notesRef}
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         onBlur={() => save({ notes })}
@@ -215,6 +229,7 @@ export function ProspectRow({
 
       <div className="mt-3 flex items-center justify-end gap-2">
         {saving && <span className="text-xs text-gray-400">Saving…</span>}
+        {saveError && <span className="text-xs text-red-600">Couldn&apos;t save — try again</span>}
         <button
           type="button"
           onClick={() => setOutreachOpen(true)}

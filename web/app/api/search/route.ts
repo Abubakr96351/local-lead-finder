@@ -1,5 +1,6 @@
 import { runSearch } from "@/lib/runSearch";
 import { findCachedSearch } from "@/lib/searchCache";
+import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,6 +21,9 @@ interface SearchRequestBody {
 }
 
 export async function POST(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
   const body = (await request.json()) as SearchRequestBody;
   const { industry, city, country, resultCount, forceRefresh } = body;
 
@@ -47,6 +51,12 @@ export async function POST(request: Request) {
 
       try {
         if (!forceRefresh) {
+          // Shared across all users (keyed by industry/city/country, not
+          // ownership) so nobody re-pays Google for a city/niche someone
+          // else already searched recently. A cache hit intentionally
+          // doesn't create a new Search row for the current user, so it
+          // won't show up in their own Past Searches — only the cost
+          // savings carry over, not the history entry.
           const cached = await findCachedSearch(industry, city, country, resultCount);
           if (cached) {
             send({ type: "cached", cachedAt: cached.cachedAt });
@@ -63,7 +73,7 @@ export async function POST(request: Request) {
         }
 
         const result = await runSearch(
-          { industry, city, country, resultCount },
+          { industry, city, country, resultCount, userId: user.id },
           (progress) => send({ type: "progress", ...progress }),
           (total) => send({ type: "found", total }),
         );

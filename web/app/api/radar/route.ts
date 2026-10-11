@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET() {
-  const radars = await prisma.radar.findMany({ orderBy: { createdAt: "desc" } });
+  const user = await getCurrentUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
+  const radars = await prisma.radar.findMany({
+    where: user.role === "ADMIN" ? {} : { userId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
   return Response.json(radars);
 }
 
@@ -15,6 +22,9 @@ interface CreateRadarBody {
 }
 
 export async function POST(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
   const body = (await request.json()) as CreateRadarBody;
 
   if (!body.niche || !body.state) {
@@ -29,6 +39,7 @@ export async function POST(request: Request) {
       maxLeadsPerScan: body.maxLeadsPerScan || 25,
       cadence: body.cadence || "weekly",
       notificationEmail: body.notificationEmail || undefined,
+      userId: user.id,
     },
   });
 

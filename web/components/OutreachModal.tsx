@@ -107,7 +107,6 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
   const [channel, setChannel] = useState<Channel | null>(null);
   const [step, setStep] = useState<Step>("channel");
   const [templates] = useState(() => buildTemplates(lead, primaryType));
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [subject, setSubject] = useState(`Quick note about ${lead.name}'s website`);
   const [body, setBody] = useState("");
   const [copied, setCopied] = useState<"body" | "subject" | null>(null);
@@ -123,7 +122,6 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
   }
 
   function pickTemplate(template: Template) {
-    setSelectedTemplate(template);
     setBody(template.body);
     setStep("compose");
   }
@@ -186,7 +184,7 @@ export function OutreachModal({ lead, onClose }: { lead: OutreachLead; onClose: 
                     href={lead.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="truncate text-blue-600 hover:underline block"
+                    className="truncate text-brand-blue hover:underline block"
                   >
                     {lead.website}
                   </a>

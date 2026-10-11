@@ -1,28 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { CircleUserRound, ChevronDown, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { CircleUserRound, ChevronDown, Menu, X, LogOut, KeyRound } from "lucide-react";
+import { ChangePasswordModal } from "./ChangePasswordModal";
 
-const TABS = [
+const BASE_TABS = [
   { label: "Scraper", href: "/scraper" },
   { label: "Prospect List", href: "/prospects" },
   { label: "Radar", href: "/radar" },
   { label: "Past Searches", href: "/past-searches" },
 ];
 
-export function NavBar() {
+export interface NavBarUser {
+  email: string;
+  name: string | null;
+  role: "ADMIN" | "USER";
+}
+
+export function NavBar({ user }: { user: NavBarUser }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
+
+  const tabs =
+    user.role === "ADMIN" ? [...BASE_TABS, { label: "Users", href: "/admin/users" }] : BASE_TABS;
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <header className="bg-brand-navy text-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-10">
           <Link
-            href="/scraper"
+            href="/"
             className="flex shrink-0 items-center gap-2.5"
             onClick={() => setMenuOpen(false)}
           >
@@ -39,7 +69,7 @@ export function NavBar() {
             </span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm lg:flex">
-            {TABS.map((tab) => {
+            {tabs.map((tab) => {
               const active = pathname === tab.href;
               return (
                 <Link
@@ -58,9 +88,46 @@ export function NavBar() {
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-3">
-          <div className="hidden items-center gap-1 text-gray-400 sm:flex">
-            <CircleUserRound className="h-7 w-7" />
-            <ChevronDown className="h-4 w-4" />
+          <div className="relative hidden sm:block" ref={accountRef}>
+            <button
+              type="button"
+              onClick={() => setAccountOpen((open) => !open)}
+              aria-label="Account menu"
+              aria-expanded={accountOpen}
+              className="flex items-center gap-1 text-gray-400 hover:text-white"
+            >
+              <CircleUserRound className="h-7 w-7" />
+              <ChevronDown className="h-4 w-4" />
+            </button>
+            {accountOpen && (
+              <div className="absolute right-0 top-11 z-20 w-56 rounded-xl border border-gray-200 bg-white p-2 text-sm shadow-xl">
+                <div className="px-3 py-2">
+                  <p className="truncate font-medium text-gray-900">
+                    {user.name || user.email}
+                  </p>
+                  {user.name && (
+                    <p className="truncate text-xs text-gray-400">{user.email}</p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAccountOpen(false);
+                    setChangePasswordOpen(true);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  <KeyRound className="h-4 w-4" /> Change password
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  <LogOut className="h-4 w-4" /> Log out
+                </button>
+              </div>
+            )}
           </div>
           <button
             type="button"
@@ -76,7 +143,7 @@ export function NavBar() {
 
       {menuOpen && (
         <nav className="flex flex-col gap-1 border-t border-white/10 px-4 py-3 text-sm lg:hidden">
-          {TABS.map((tab) => {
+          {tabs.map((tab) => {
             const active = pathname === tab.href;
             return (
               <Link
@@ -93,11 +160,36 @@ export function NavBar() {
               </Link>
             );
           })}
-          <div className="flex items-center gap-2 px-3 py-2 text-gray-400 sm:hidden">
-            <CircleUserRound className="h-6 w-6" />
-            <span>Account</span>
+          <div className="mt-1 flex items-center justify-between gap-2 border-t border-white/10 px-3 pt-3">
+            <div className="min-w-0">
+              <p className="truncate text-sm text-gray-300">{user.name || user.email}</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setChangePasswordOpen(true);
+                }}
+                aria-label="Change password"
+                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-gray-400 hover:bg-white/5 hover:text-white"
+              >
+                <KeyRound className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-gray-400 hover:bg-white/5 hover:text-white"
+              >
+                <LogOut className="h-4 w-4" /> Log out
+              </button>
+            </div>
           </div>
         </nav>
+      )}
+
+      {changePasswordOpen && (
+        <ChangePasswordModal onClose={() => setChangePasswordOpen(false)} />
       )}
     </header>
   );

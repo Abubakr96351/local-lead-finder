@@ -25,7 +25,7 @@ export function ProspectListClient({ prospects: initialProspects }: { prospects:
             aria-label="List view"
             aria-pressed={view === "list"}
             className={`flex h-9 w-9 items-center justify-center ${
-              view === "list" ? "bg-gray-900 text-white" : "bg-white text-gray-500 hover:bg-gray-50"
+              view === "list" ? "bg-brand-navy text-white" : "bg-white text-gray-500 hover:bg-gray-50"
             }`}
           >
             <List className="h-4 w-4" />
@@ -36,7 +36,7 @@ export function ProspectListClient({ prospects: initialProspects }: { prospects:
             aria-label="Grid view"
             aria-pressed={view === "grid"}
             className={`flex h-9 w-9 items-center justify-center border-l border-gray-300 ${
-              view === "grid" ? "bg-gray-900 text-white" : "bg-white text-gray-500 hover:bg-gray-50"
+              view === "grid" ? "bg-brand-navy text-white" : "bg-white text-gray-500 hover:bg-gray-50"
             }`}
           >
             <LayoutGrid className="h-4 w-4" />

@@ -175,7 +175,12 @@ export async function inspectWebsite(
       .first()
       .getAttribute("href")
       .catch(() => null);
-    let email = mailtoHref?.replace(/^mailto:/i, "").split("?")[0].trim();
+    // Re-match against EMAIL_RE rather than trusting the href's content
+    // verbatim — some sites hand-write malformed mailto links (stray
+    // "http://" prefixes, trailing "%20", etc.) that aren't a valid email
+    // on their own; this pulls out just the email-shaped substring.
+    const mailtoCandidate = mailtoHref?.replace(/^mailto:/i, "").split("?")[0].trim();
+    let email = mailtoCandidate?.match(EMAIL_RE)?.[0];
     if (!email) {
       const bodyText = await page.locator("body").innerText().catch(() => "");
       const match = bodyText.match(EMAIL_RE);

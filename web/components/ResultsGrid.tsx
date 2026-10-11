@@ -14,6 +14,7 @@ export function ResultsGrid({
   onAddToProspects,
   onExportCsv,
   addingToProspects,
+  prospectedPlaceIds,
 }: {
   leads: ScoredLead[];
   industry: string;
@@ -23,6 +24,7 @@ export function ResultsGrid({
   onAddToProspects: () => void;
   onExportCsv: () => void;
   addingToProspects: boolean;
+  prospectedPlaceIds: Set<string>;
 }) {
   const [view, setView] = useState<"grid" | "list">("grid");
 
@@ -41,14 +43,14 @@ export function ResultsGrid({
             type="button"
             onClick={onAddToProspects}
             disabled={selected.size === 0 || addingToProspects}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg bg-brand-blue px-4 py-2 text-sm font-medium text-white hover:bg-brand-blue-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
             {addingToProspects ? "Adding…" : "Add To Prospect List"}
           </button>
           <button
             type="button"
             onClick={onExportCsv}
-            className="rounded-lg border border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
+            className="rounded-lg border border-brand-blue px-4 py-2 text-sm font-medium text-brand-blue hover:bg-brand-blue-subtle"
           >
             Export CSV
           </button>
@@ -59,7 +61,7 @@ export function ResultsGrid({
               aria-label="List view"
               aria-pressed={view === "list"}
               className={`flex h-9 w-9 items-center justify-center ${
-                view === "list" ? "bg-gray-900 text-white" : "bg-white text-gray-500 hover:bg-gray-50"
+                view === "list" ? "bg-brand-navy text-white" : "bg-white text-gray-500 hover:bg-gray-50"
               }`}
             >
               <List className="h-4 w-4" />
@@ -70,7 +72,7 @@ export function ResultsGrid({
               aria-label="Grid view"
               aria-pressed={view === "grid"}
               className={`flex h-9 w-9 items-center justify-center border-l border-gray-300 ${
-                view === "grid" ? "bg-gray-900 text-white" : "bg-white text-gray-500 hover:bg-gray-50"
+                view === "grid" ? "bg-brand-navy text-white" : "bg-white text-gray-500 hover:bg-gray-50"
               }`}
             >
               <LayoutGrid className="h-4 w-4" />
@@ -90,6 +92,7 @@ export function ResultsGrid({
             lead={lead}
             selected={selected.has(lead.placeId)}
             onToggle={() => onToggle(lead.placeId)}
+            alreadyProspected={prospectedPlaceIds.has(lead.placeId)}
           />
         ))}
       </div>

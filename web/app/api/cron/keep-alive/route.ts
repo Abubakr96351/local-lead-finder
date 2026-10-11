@@ -15,5 +15,8 @@ export async function GET(request: Request) {
   }
 
   await prisma.$queryRaw`SELECT 1`;
-  return Response.json({ ok: true, pingedAt: new Date().toISOString() });
+  const { count: expiredSessionsDeleted } = await prisma.session.deleteMany({
+    where: { expiresAt: { lt: new Date() } },
+  });
+  return Response.json({ ok: true, pingedAt: new Date().toISOString(), expiredSessionsDeleted });
 }
